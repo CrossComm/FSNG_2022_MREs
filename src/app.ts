@@ -26,7 +26,7 @@ export default class MRETemplate {
 		this.assets = new MRE.AssetContainer(this.context);
 
 		// Load a glTF model before we use it
-		const modelData = await this.assets.loadGltf('/assets/Centrifuge.gltf', "box");
+		const modelData = await this.assets.loadGltf('Centrifuge.gltf', "box");
 
 		// spawn a copy of the glTF model
 		this.model = MRE.Actor.CreateFromPrefab(this.context, {
@@ -42,7 +42,7 @@ export default class MRETemplate {
 		this.model.created().then(() => this.assignAnimation());	
 
 		this.sampleSound = this.assets.createSound("SampleSound", {
-			uri: "/assets/piano2.wav",
+			uri: "piano2.wav",
 		})
 
 		const scaleAnimationData = this.assets.createAnimationData("Scale", {
