@@ -8,10 +8,11 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 /**
  * The main class of this app. All the logic goes here.
  */
-export default class HelloWorld {
-	private text: MRE.Actor = null;
-	private cube: MRE.Actor = null;
+export default class MRETemplate {
+	private model: MRE.Actor = null;
 	private assets: MRE.AssetContainer;
+	private animation: MRE.Animation = null;
+	private sampleSound: MRE.Asset;
 
 	constructor(private context: MRE.Context) {
 		this.context.onStarted(() => this.started());
@@ -24,133 +25,110 @@ export default class HelloWorld {
 		// set up somewhere to store loaded assets (meshes, textures, animations, gltfs, etc.)
 		this.assets = new MRE.AssetContainer(this.context);
 
-		// Create a new actor with no mesh, but some text.
-		this.text = MRE.Actor.Create(this.context, {
-			actor: {
-				name: 'Text',
-				transform: {
-					app: { position: { x: 0, y: 0.5, z: 0 } }
-				},
-				text: {
-					contents: "Hello CrossComm!",
-					anchor: MRE.TextAnchorLocation.MiddleCenter,
-					color: { r: 30 / 255, g: 206 / 255, b: 213 / 255 },
-					height: 0.3
-				}
-			}
-		});
-
-		// Here we create an animation for our text actor. First we create animation data, which can be used on any
-		// actor. We'll reference that actor with the placeholder "text".
-		const spinAnimData = this.assets.createAnimationData(
-			// The name is a unique identifier for this data. You can use it to find the data in the asset container,
-			// but it's merely descriptive in this sample.
-			"Spin",
-			{
-				// Animation data is defined by a list of animation "tracks": a particular property you want to change,
-				// and the values you want to change it to.
-				tracks: [{
-					// This animation targets the rotation of an actor named "text"
-					target: MRE.ActorPath("text").transform.local.rotation,
-					// And the rotation will be set to spin over 20 seconds
-					keyframes: this.generateSpinKeyframes(20, MRE.Vector3.Up()),
-					// And it will move smoothly from one frame to the next
-					easing: MRE.AnimationEaseCurves.Linear
-				}]
-			});
-		// Once the animation data is created, we can create a real animation from it.
-		spinAnimData.bind(
-			// We assign our text actor to the actor placeholder "text"
-			{ text: this.text },
-			// And set it to play immediately, and bounce back and forth from start to end
-			{ isPlaying: true, wrapMode: MRE.AnimationWrapMode.PingPong });
-
 		// Load a glTF model before we use it
-		const cubeData = await this.assets.loadGltf('altspace-cube.glb', "box");
+		const modelData = await this.assets.loadGltf('Heart.gltf', "box");
 
 		// spawn a copy of the glTF model
-		this.cube = MRE.Actor.CreateFromPrefab(this.context, {
+		this.model = MRE.Actor.CreateFromPrefab(this.context, {
 			// using the data we loaded earlier
-			firstPrefabFrom: cubeData,
+			firstPrefabFrom: modelData,
 			// Also apply the following generic actor properties.
 			actor: {
-				name: 'Altspace Cube',
-				// Parent the glTF model to the text actor, so the transform is relative to the text
-				parentId: this.text.id,
-				transform: {
-					local: {
-						position: { x: 0, y: -1, z: 0 },
-						scale: { x: 0.4, y: 0.4, z: 0.4 }
-					}
-				}
+				name: 'Model',
 			}
 		});
 
-		// Create some animations on the cube.
-		const flipAnimData = this.assets.createAnimationData(
-			// the animation name
-			"DoAFlip",
-			{ tracks: [{
-				// applies to the rotation of an unknown actor we'll refer to as "target"
-				target: MRE.ActorPath("target").transform.local.rotation,
-				// do a spin around the X axis over the course of one second
-				keyframes: this.generateSpinKeyframes(1.0, MRE.Vector3.Right()),
-				// and do it smoothly
-				easing: MRE.AnimationEaseCurves.Linear
-			}]}
+		//assign animations once the model is created
+		this.model.created().then(() => this.assignAnimation());	
+
+		this.sampleSound = this.assets.createSound("SampleSound", {
+			uri: "piano2.wav",
+		})
+
+		const scaleAnimationData = this.assets.createAnimationData("Scale", {
+			tracks: [
+				{
+					target: MRE.ActorPath("model").transform.local.scale,
+					keyframes: this.generateScaleAnimation(1),
+					easing: MRE.AnimationEaseCurves.EaseInOutCircular
+				}
+			]
+		})
+
+		const scaleAnimation = await scaleAnimationData.bind(
+			{
+				model: this.model,	
+			},
+			{
+				isPlaying: false,
+				wrapMode: MRE.AnimationWrapMode.PingPong
+			}
 		);
-		// apply the animation to our cube
-		const flipAnim = await flipAnimData.bind({ target: this.cube });
 
 		// Set up cursor interaction. We add the input behavior ButtonBehavior to the cube.
 		// Button behaviors have two pairs of events: hover start/stop, and click start/stop.
-		const buttonBehavior = this.cube.setBehavior(MRE.ButtonBehavior);
+		const buttonBehavior = this.model.setBehavior(MRE.ButtonBehavior);
 
-		// Trigger the grow/shrink animations on hover.
 		buttonBehavior.onHover('enter', () => {
-			// use the convenience function "AnimateTo" instead of creating the animation data in advance
-			//MRE.Animation.AnimateTo(this.context, this.cube, {
-			//	destination: { transform: { local: { scale: { x: 0.5, y: 0.5, z: 0.5 } } } },
-			//	duration: 0.3,
-			//	easing: MRE.AnimationEaseCurves.EaseOutSine
-			//});
-			flipAnim.play();
+			if (!this.animation.isPlaying) {
+				scaleAnimation.play();
+			}
 		});
+
 		buttonBehavior.onHover('exit', () => {
-			MRE.Animation.AnimateTo(this.context, this.cube, {
-				destination: { transform: { local: { scale: { x: 0.4, y: 0.4, z: 0.4 } } } },
+			scaleAnimation.stop();
+			MRE.Animation.AnimateTo(this.context, this.model, {
+				destination: { transform: { local: { scale: { x: 1, y: 1, z: 1 } } } },
 				duration: 0.3,
 				easing: MRE.AnimationEaseCurves.EaseOutSine
 			});
 		});
 
-		// When clicked, do a 360 sideways.
 		buttonBehavior.onClick(_ => {
-			flipAnim.play();
+			if (!this.animation.isPlaying) {
+				scaleAnimation.stop();
+				MRE.Animation.AnimateTo(this.context, this.model, {
+					destination: { transform: { local: { scale: { x: 1, y: 1, z: 1 } } } },
+					duration: 0.3,
+					easing: MRE.AnimationEaseCurves.EaseOutSine
+				});
+
+				this.animation.play();
+
+				//add the duration if the sound clip is longer than the animation
+				this.model.startSound(this.sampleSound.id, { 
+					volume: 1, 
+					looping: false, 
+					// duration: this.animation.duration 
+				});
+			}
 		});
 	}
 
-	/**
-	 * Generate keyframe data for a simple spin animation.
-	 * @param duration The length of time in seconds it takes to complete a full revolution.
-	 * @param axis The axis of rotation in local space.
-	 */
-	private generateSpinKeyframes(duration: number, axis: MRE.Vector3): Array<MRE.Keyframe<MRE.Quaternion>> {
+	//Assigns animation and properties of animation
+	private assignAnimation() {
+		console.log(this.model.targetingAnimations)
+		this.animation = this.model.targetingAnimationsByName.get("HeartBeat");
+		this.animation.wrapMode = MRE.AnimationWrapMode.Loop
+		this.animation.isPlaying = true;
+	}
+
+	private generateScaleAnimation(duration: number): Array<MRE.Keyframe<MRE.Vector3>> {
 		return [{
 			time: 0 * duration,
-			value: MRE.Quaternion.RotationAxis(axis, 0)
+			value: new MRE.Vector3(1, 1, 1)
 		}, {
 			time: 0.25 * duration,
-			value: MRE.Quaternion.RotationAxis(axis, Math.PI / 2)
+			value: new MRE.Vector3(1.1, 1.1, 1.1)
 		}, {
 			time: 0.5 * duration,
-			value: MRE.Quaternion.RotationAxis(axis, Math.PI)
+			value: new MRE.Vector3(1.2, 1.2, 1.2)
 		}, {
 			time: 0.75 * duration,
-			value: MRE.Quaternion.RotationAxis(axis, 3 * Math.PI / 2)
+			value: new MRE.Vector3(1.1, 1.1, 1.1)
 		}, {
 			time: 1 * duration,
-			value: MRE.Quaternion.RotationAxis(axis, 2 * Math.PI)
+			value: new MRE.Vector3(1, 1, 1)
 		}];
 	}
 }
