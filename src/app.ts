@@ -49,8 +49,8 @@ export default class MRETemplate {
 			tracks: [
 				{
 					target: MRE.ActorPath("model").transform.local.scale,
-					keyframes: this.generateScaleAnimation(1),
-					easing: MRE.AnimationEaseCurves.EaseInOutCircular
+					keyframes: this.generateScaleAnimation(2),
+					easing: MRE.AnimationEaseCurves.Linear
 				}
 			]
 		})
@@ -71,7 +71,11 @@ export default class MRETemplate {
 
 		buttonBehavior.onHover('enter', () => {
 			if (!this.animation.isPlaying) {
-				scaleAnimation.play();
+				MRE.Animation.AnimateTo(this.context, this.model, {
+					destination: { transform: { local: { scale: { x: 1.025, y: 1.025, z: 1.025 } } } },
+					duration: 0.3,
+					easing: MRE.AnimationEaseCurves.Linear
+				});
 			}
 		});
 
@@ -80,7 +84,7 @@ export default class MRETemplate {
 			MRE.Animation.AnimateTo(this.context, this.model, {
 				destination: { transform: { local: { scale: { x: 1, y: 1, z: 1 } } } },
 				duration: 0.3,
-				easing: MRE.AnimationEaseCurves.EaseOutSine
+				easing: MRE.AnimationEaseCurves.Linear
 			});
 		});
 
@@ -96,11 +100,11 @@ export default class MRETemplate {
 				this.animation.play();
 
 				//add the duration if the sound clip is longer than the animation
-				this.model.startSound(this.sampleSound.id, { 
-					volume: 1, 
-					looping: false, 
-					// duration: this.animation.duration 
-				});
+				// this.model.startSound(this.sampleSound.id, { 
+				// 	volume: 1, 
+				// 	looping: false, 
+				// 	// duration: this.animation.duration 
+				// });
 			}
 		});
 	}
@@ -119,13 +123,13 @@ export default class MRETemplate {
 			value: new MRE.Vector3(1, 1, 1)
 		}, {
 			time: 0.25 * duration,
-			value: new MRE.Vector3(1.1, 1.1, 1.1)
+			value: new MRE.Vector3(1.025, 1.025, 1.025)
 		}, {
 			time: 0.5 * duration,
-			value: new MRE.Vector3(1.2, 1.2, 1.2)
+			value: new MRE.Vector3(1.05, 1.05, 1.05)
 		}, {
 			time: 0.75 * duration,
-			value: new MRE.Vector3(1.1, 1.1, 1.1)
+			value: new MRE.Vector3(1.025, 1.025, 1.025)
 		}, {
 			time: 1 * duration,
 			value: new MRE.Vector3(1, 1, 1)
