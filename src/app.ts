@@ -26,7 +26,7 @@ export default class MRETemplate {
 		this.assets = new MRE.AssetContainer(this.context);
 
 		// Load a glTF model before we use it
-		const modelData = await this.assets.loadGltf('Bronchoscope_Patient.gltf', "box");
+		const modelData = await this.assets.loadGltf('Ventilator.gltf', "box");
 
 		// spawn a copy of the glTF model
 		this.model = MRE.Actor.CreateFromPrefab(this.context, {
@@ -112,7 +112,7 @@ export default class MRETemplate {
 	//Assigns animation and properties of animation
 	private assignAnimation() {
 		console.log(this.model.targetingAnimations)
-		this.animation = this.model.targetingAnimationsByName.get("Female_Patient_MouthOpen");
+		this.animation = this.model.targetingAnimationsByName.get("ICU_Patient_Chest");
 		this.animation.wrapMode = MRE.AnimationWrapMode.Once;
 	}
 
