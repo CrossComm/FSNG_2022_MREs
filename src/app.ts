@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 
 /**
@@ -71,7 +66,11 @@ export default class MRETemplate {
 
 		buttonBehavior.onHover('enter', () => {
 			if (!this.animation.isPlaying) {
-				scaleAnimation.play();
+				MRE.Animation.AnimateTo(this.context, this.model, {
+					destination: { transform: { local: { scale: { x: 1.025, y: 1.025, z: 1.025 } } } },
+					duration: 0.3,
+					easing: MRE.AnimationEaseCurves.Linear
+				});
 			}
 		});
 
@@ -80,7 +79,7 @@ export default class MRETemplate {
 			MRE.Animation.AnimateTo(this.context, this.model, {
 				destination: { transform: { local: { scale: { x: 1, y: 1, z: 1 } } } },
 				duration: 0.3,
-				easing: MRE.AnimationEaseCurves.EaseOutSine
+				easing: MRE.AnimationEaseCurves.Linear
 			});
 		});
 
@@ -96,18 +95,17 @@ export default class MRETemplate {
 				this.animation.play();
 
 				//add the duration if the sound clip is longer than the animation
-				this.model.startSound(this.sampleSound.id, { 
-					volume: 1, 
-					looping: false, 
-					// duration: this.animation.duration 
-				});
+				// this.model.startSound(this.sampleSound.id, { 
+				// 	volume: 1, 
+				// 	looping: false, 
+				// 	// duration: this.animation.duration 
+				// });
 			}
 		});
 	}
 
 	//Assigns animation and properties of animation
-	private assignAnimation()
-	{
+	private assignAnimation() {
 		console.log(this.model.targetingAnimations)
 		this.animation = this.model.targetingAnimationsByName.get("IVNeedle_Insert.001");
 		this.animation.wrapMode = MRE.AnimationWrapMode.Once;
