@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 
 /**
@@ -72,7 +67,11 @@ export default class MRETemplate {
 
 		buttonBehavior.onHover('enter', () => {
 			if (!this.animation.isPlaying) {
-				scaleAnimation.play();
+				MRE.Animation.AnimateTo(this.context, this.model, {
+					destination: { transform: { local: { scale: { x: 1.05, y: 1.05, z: 1.05 } } } },
+					duration: 0.3,
+					easing: MRE.AnimationEaseCurves.Linear
+				});
 			}
 		});
 
@@ -81,7 +80,7 @@ export default class MRETemplate {
 			MRE.Animation.AnimateTo(this.context, this.model, {
 				destination: { transform: { local: { scale: { x: 1, y: 1, z: 1 } } } },
 				duration: 0.3,
-				easing: MRE.AnimationEaseCurves.EaseOutSine
+				easing: MRE.AnimationEaseCurves.Linear
 			});
 		});
 
@@ -107,8 +106,7 @@ export default class MRETemplate {
 	}
 
 	//Assigns animation and properties of animation
-	private assignAnimation()
-	{
+	private assignAnimation() {
 		console.log(this.model.targetingAnimations)
 		this.animation = this.model.targetingAnimationsByName.get("Microscope_Slides");
 		this.animation.wrapMode = MRE.AnimationWrapMode.Once;
