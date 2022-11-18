@@ -96,11 +96,11 @@ export default class MRETemplate {
 				this.animation.play();
 
 				//add the duration if the sound clip is longer than the animation
-				this.model.startSound(this.sampleSound.id, { 
-					volume: 1, 
-					looping: false, 
-					// duration: this.animation.duration 
-				});
+				// this.model.startSound(this.sampleSound.id, { 
+				// 	volume: 1, 
+				// 	looping: false, 
+				// 	// duration: this.animation.duration 
+				// });
 			}
 		});
 	}
