@@ -39,10 +39,6 @@ module.exports = {
 				"SwitchCase": 1
 			}
 		],
-		"linebreak-style": [
-			"warn",
-			"windows"
-		],
 		"max-classes-per-file": ["warn", 1],
 		"max-len": ["error", 120],
 		"no-div-regex": "error",

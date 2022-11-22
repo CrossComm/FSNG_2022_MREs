@@ -105,10 +105,9 @@ export default class MRETemplate {
 	}
 
 	//Assigns animation and properties of animation
-	private assignAnimation()
-	{
+	private assignAnimation() {
 		console.log(this.model.targetingAnimations)
-		this.animation = this.model.targetingAnimationsByName.get("EKG_readout");
+		this.animation = this.model.targetingAnimationsByName.get("Animation");
 		this.animation.wrapMode = MRE.AnimationWrapMode.Once;
 	}
 
