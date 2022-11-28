@@ -112,7 +112,7 @@ export default class MRETemplate {
 	//Assigns animation and properties of animation
 	private assignAnimation() {
 		console.log(this.model.targetingAnimations)
-		this.animation = this.model.targetingAnimationsByName.get("Female_Patient_MouthOpen");
+		this.animation = this.model.targetingAnimationsByName.get("Animation");
 		this.animation.wrapMode = MRE.AnimationWrapMode.Once;
 	}
 
