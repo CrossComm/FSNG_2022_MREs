@@ -21,7 +21,7 @@ export default class MRETemplate {
 		this.assets = new MRE.AssetContainer(this.context);
 
 		// Load a glTF model before we use it
-		const modelData = await this.assets.loadGltf('IV_Insertion.gltf', "box");
+		const modelData = await this.assets.loadGltf('Insertion_IV.gltf', "box");
 
 		// spawn a copy of the glTF model
 		this.model = MRE.Actor.CreateFromPrefab(this.context, {
