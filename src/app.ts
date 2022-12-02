@@ -107,7 +107,7 @@ export default class MRETemplate {
 	//Assigns animation and properties of animation
 	private assignAnimation() {
 		console.log(this.model.targetingAnimations)
-		this.animation = this.model.targetingAnimationsByName.get("IVNeedle_Insert.001");
+		this.animation = this.model.targetingAnimationsByName.get("Animation");
 		this.animation.wrapMode = MRE.AnimationWrapMode.Once;
 	}
 
