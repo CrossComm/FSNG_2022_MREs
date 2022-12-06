@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 
 /**
@@ -110,10 +105,9 @@ export default class MRETemplate {
 	}
 
 	//Assigns animation and properties of animation
-	private assignAnimation()
-	{
+	private assignAnimation() {
 		console.log(this.model.targetingAnimations)
-		this.animation = this.model.targetingAnimationsByName.get("SkeletonExplodedView");
+		this.animation = this.model.targetingAnimationsByName.get("Animation");
 		this.animation.wrapMode = MRE.AnimationWrapMode.Once;
 	}
 
