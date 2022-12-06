@@ -404,6 +404,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0.3140895664691925,
+                0.3140895664691925,
+                0.3140895664691925
+            ],
             "name" : "WhitePlastic.002",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -418,10 +423,18 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                1,
+                1,
+                1
+            ],
+            "emissiveTexture" : {
+                "index" : 1
+            },
             "name" : "Monitor01.001",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
-                    "index" : 1
+                    "index" : 2
                 },
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0.5527864098548889
@@ -433,7 +446,7 @@
             "name" : "Normal-ECG-SCALED-DOWN-WATERMARK",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
-                    "index" : 2
+                    "index" : 3
                 },
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0.5
@@ -458,7 +471,7 @@
             "name" : "BP_Tubes.001",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
-                    "index" : 3
+                    "index" : 4
                 },
                 "metallicFactor" : 0,
                 "roughnessFactor" : 0.5527864098548889
@@ -604,6 +617,10 @@
         {
             "sampler" : 0,
             "source" : 0
+        },
+        {
+            "sampler" : 0,
+            "source" : 1
         },
         {
             "sampler" : 0,
