@@ -107,7 +107,7 @@ export default class MRETemplate {
 	//Assigns animation and properties of animation
 	private assignAnimation() {
 		console.log(this.model.targetingAnimations)
-		this.animation = this.model.targetingAnimationsByName.get("Centrifuge_Action");
+		this.animation = this.model.targetingAnimationsByName.get("Microscope_Slides_Anim");
 		this.animation.wrapMode = MRE.AnimationWrapMode.Once;
 	}
 
